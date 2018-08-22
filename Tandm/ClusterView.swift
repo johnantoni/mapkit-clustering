@@ -6,6 +6,28 @@ A subclass of MKAnnotationView that configures itself for representing a MKClust
 */
 import MapKit
 
+func hexStringToUIColor (hex:String) -> UIColor {
+    var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+  
+    if (cString.hasPrefix("#")) {
+        cString.remove(at: cString.startIndex)
+    }
+  
+    if ((cString.count) != 6) {
+        return UIColor.gray
+    }
+  
+    var rgbValue:UInt32 = 0
+    Scanner(string: cString).scanHexInt32(&rgbValue)
+  
+    return UIColor(
+        red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+        green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+        blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+        alpha: CGFloat(1.0)
+    )
+}
+
 class ClusterView: MKAnnotationView {
     
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
@@ -24,28 +46,16 @@ class ClusterView: MKAnnotationView {
             if let cluster = newValue as? MKClusterAnnotation {
                 let renderer = UIGraphicsImageRenderer(size: CGSize(width: 40, height: 40))
                 let count = cluster.memberAnnotations.count
-                let uniCount = cluster.memberAnnotations.filter { member -> Bool in
-                    return (member as! Bike).type == .unicycle
-                }.count
                 image = renderer.image { _ in
-                    // Fill full circle with tricycle color
-                    UIColor(named: "tricycleCol")?.setFill()
+                    // Fill full circle
+                    let cssColor = hexStringToUIColor(hex: "#DD1E2A")
+                    cssColor.setFill()
                     UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: 40, height: 40)).fill()
-                    
-                    // Fill pie with unicycle color
-                    UIColor(named: "unicycleCol")?.setFill()
-                    let piePath = UIBezierPath()
-                    piePath.addArc(withCenter: CGPoint(x: 20, y: 20), radius: 20,
-                                   startAngle: 0, endAngle: (CGFloat.pi * 2.0 * CGFloat(uniCount)) / CGFloat(count),
-                                   clockwise: true)
-                    piePath.addLine(to: CGPoint(x: 20, y: 20))
-                    piePath.close()
-                    piePath.fill()
-                    
+                  
                     // Fill inner circle with white color
                     UIColor.white.setFill()
                     UIBezierPath(ovalIn: CGRect(x: 8, y: 8, width: 24, height: 24)).fill()
-                    
+                      
                     // Finally draw count text vertically and horizontally centered
                     let attributes = [ NSAttributedStringKey.foregroundColor: UIColor.black,
                                  NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 20)]
