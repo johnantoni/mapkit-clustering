@@ -21,6 +21,8 @@ class Bike: MKPointAnnotation {
             let bike = Bike()
             bike.coordinate = CLLocationCoordinate2DMake(item["lat"]!.doubleValue, item["long"]!.doubleValue)
             bike.type = BikeType(rawValue: item["type"]!.intValue)!
+            bike.title = "Hello"
+            bike.subtitle = "Sub"
             return bike
         }
         return bikes
