@@ -72,6 +72,12 @@ class ViewController: UIViewController, MKMapViewDelegate {
         registerAnnotationViewClasses()
         loadDataForMapRegionAndBikes()
     }
-    
+
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+      
+      if let annotation = view.annotation as? Bike {
+        print(annotation.identifier)
+      }
+    }
 }
 

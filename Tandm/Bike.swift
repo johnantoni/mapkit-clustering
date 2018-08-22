@@ -15,6 +15,8 @@ class Bike: MKPointAnnotation {
     }
     
     var type: BikeType = .tricycle
+  
+    var identifier: String = "myidentifier"
     
     class func bikes(fromDictionaries dictionaries: [[String: NSNumber]]) -> [Bike] {
         let bikes = dictionaries.map { item -> Bike in
